@@ -11,6 +11,9 @@ public class CellButton extends JButton {
     private final Piece piece;
     private final Pair<Integer,Integer> position;
     public int size;
+
+    // MODIFIES : this
+    // EFFECT   : construct a cell button with a piece
     public CellButton(int x, int y, int size, Piece piece) {
         this.piece = piece;
         this.size = size;
@@ -27,6 +30,9 @@ public class CellButton extends JButton {
         setIcon(icon);
 
     }
+
+    // MODIFIES : this
+    // EFFECT   : construct a cell button wit no piece
     public CellButton(int x, int y, int size) {
         piece = null;
         this.size = size;

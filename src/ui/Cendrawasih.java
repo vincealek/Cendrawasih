@@ -3,12 +3,12 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
-public class TesApp {
+public class Cendrawasih {
 
     private static int SIZE;
     private static JFrame frame;
 
-    public TesApp() {
+    public Cendrawasih() {
         SIZE = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()*3/4;
         setFrame();
     }

@@ -11,6 +11,7 @@ public class BoardPanel extends JPanel {
     public int size;
     private final ArrayList<ArrayList<CellButton>> board;
 
+    // EFFECTS : create a board and a panel for the board
     public BoardPanel (int size) {
         this.size = size;
         setLayout(new GridLayout(10,10));
@@ -18,6 +19,9 @@ public class BoardPanel extends JPanel {
         createBoard();
         createPanel();
     }
+
+    // MODIFIES : this.board
+    // EFFECTS  : create the chessboard
     private void createBoard() {
         for(int i = 0; i < 8; i++)
             board.add(new ArrayList<>());
@@ -34,6 +38,9 @@ public class BoardPanel extends JPanel {
             }
         }
     }
+
+    // MODIFIES : this.board
+    // EFFECTS  : helper function to create the first/last rank of the chessboard
     private void createFirstRank(int x, int color) {
         board.get(x).add(new CellButton(x, 0, size/10, new Rook(7, 0, color)));
         board.get(x).add(new CellButton(x, 1, size/10, new Knight(7, 1, color)));
@@ -45,6 +52,8 @@ public class BoardPanel extends JPanel {
         board.get(x).add(new CellButton(x, 7, size/10, new Rook(7, 7, color)));
     }
 
+    // MODIFIES : this
+    // EFFECTS  : create the panel for the board.
     private void createPanel() {
         for (int i = 0; i < 10; i++)
             add(new JLabel());
