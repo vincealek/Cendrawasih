@@ -1,38 +1,42 @@
 package ui;
 
+import javafx.util.Pair;
+import ui.Piece.Piece;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class CellButton extends JButton {
 
-    private int piece; //
-    private final int x, y; // position from up to down and left to right
+    private final Piece piece;
+    private final Pair<Integer,Integer> position;
+    public int size;
+    public CellButton(int x, int y, int size, Piece piece) {
+        this.piece = piece;
+        this.size = size;
+        this.position = new Pair<>(x,y);
 
-    public CellButton(Icon icon, int x, int y) {
-        setIcon(icon);
-        this.x = x;
-        this.y = y;
-        if((x+y)%2 == 1)  {
-            setBackground(Color.decode("#204040"));
+        if((x+y)%2 == 0)  {
+            setBackground(Color.decode("#9e3021"));
         }
         else {
-            setBackground(Color.decode("#FFEECC"));
+            setBackground(Color.decode("#cfa23d"));
         }
-    }
+        ImageIcon icon = new ImageIcon((new ImageIcon(piece.getImagePath())).getImage().
+                getScaledInstance(size, size, Image.SCALE_SMOOTH));
+        setIcon(icon);
 
-    public int getPiece() {
-        return piece;
     }
+    public CellButton(int x, int y, int size) {
+        piece = null;
+        this.size = size;
+        this.position = new Pair<>(x,y);
 
-    public void setPiece(int piece) {
-        this.piece = piece;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[").append(piece).append(", ").append(x)
-                .append(" ").append(y).append("]");
-        return new String(builder);
+        if((x+y)%2 == 0)  {
+            setBackground(Color.decode("#9e3021"));
+        }
+        else {
+            setBackground(Color.decode("#cfa23d"));
+        }
     }
 }
