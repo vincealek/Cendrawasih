@@ -1,12 +1,19 @@
 package ui.Piece;
 
-import ui.BoardPanel;
+import ui.CellButton;
 
 import java.util.ArrayList;
 
 public class Knight extends Piece {
-    public Knight(BoardPanel boardPanel, int rank, int file, int color) {
-        super(boardPanel, rank, file, color);
+    public Knight(int color) {
+        super(color);
+    }
+
+    public Knight(ArrayList<ArrayList<CellButton>> board, int rank, int file, int color) {
+        super(board, rank, file, color);
+    }
+
+    protected void setImagePath() {
         if(color == WHITE) {
             imagePath = resourcePath+"/w-knight.png";
         }

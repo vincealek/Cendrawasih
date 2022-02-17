@@ -1,12 +1,20 @@
 package ui.Piece;
 
-import ui.BoardPanel;
+import ui.CellButton;
 
 import java.util.ArrayList;
 
 public class Queen extends Piece {
-    public Queen(BoardPanel boardPanel, int rank, int file, int color) {
-        super(boardPanel, rank, file, color);
+    public Queen(int color) {
+        super(color);
+    }
+
+    public Queen(ArrayList<ArrayList<CellButton>> board, int rank, int file, int color) {
+        super(board, rank, file, color);
+    }
+
+    @Override
+    protected void setImagePath() {
         if(color == WHITE) {
             imagePath = resourcePath+"/w-queen.png";
         }

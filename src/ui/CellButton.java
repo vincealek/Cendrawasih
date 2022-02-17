@@ -1,25 +1,32 @@
 package ui;
 
+import ui.Piece.King;
+import ui.Piece.Pawn;
 import ui.Piece.Piece;
 import ui.Piece.Position;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class CellButton extends JButton {
 
     private Piece piece;
     private final Position position;
+    private final int rank, file;
     private final BoardPanel boardPanel;
-    private ActionListener actionListener;
+    private final ArrayList<ArrayList<CellButton>> board;
     private boolean marked;
     public int size;
 
     // MODIFIES : this
     // EFFECT   : construct a cell button with a piece
     public CellButton(BoardPanel boardPanel, int x, int y, int size, Piece piece) {
+        this.rank = x;
+        this.file = y;
         this.boardPanel = boardPanel;
+        this.board = boardPanel.getBoard();
         this.piece = piece;
         this.size = size;
         this.position = new Position(x,y);
@@ -38,8 +45,11 @@ public class CellButton extends JButton {
     // MODIFIES : this
     // EFFECT   : construct a cell button wit no piece
     public CellButton(BoardPanel boardPanel, int x, int y, int size) {
+        this.rank = x;
+        this.file = y;
         this.boardPanel = boardPanel;
-        piece = null;
+        this.board = boardPanel.getBoard();
+        this.piece = null;
         this.size = size;
         this.position = new Position(x,y);
 
@@ -58,8 +68,8 @@ public class CellButton extends JButton {
             if(this.marked) {
                 CellButton selectedButton = boardPanel.getSelectedButton();
                 clearSelectedButton();
-                setPiece(selectedButton.getPiece());
-                selectedButton.setPiece(null);
+                moveHere(selectedButton);
+                boardPanel.updateTurn();
             }
             else {
                 updateSelectedButton();
@@ -68,14 +78,43 @@ public class CellButton extends JButton {
         addActionListener(actionListener);
     }
 
+    private void moveHere(CellButton origin) {
+        setPiece(origin.getPiece());
+        origin.setPiece(null);
+        handleCastling(origin);
+        handlePromotion();
+    }
+
+    private void handlePromotion() {
+        if (piece.getClass() == Pawn.class && (rank == 7) || (rank == 0)) {
+            new PromotionDialog(this);
+        }
+    }
+
+    private void handleCastling(CellButton origin) {
+        if(piece.getClass() == King.class) {
+            if(origin.getPosition().file-this.position.file == -2) {
+                board.get(rank).get(file-1).moveHere(board.get(rank).get(file+1));
+            }
+            if(origin.getPosition().file-this.position.file == 2) {
+                board.get(rank).get(file+1).moveHere(board.get(rank).get(file-2));
+            }
+        }
+    }
+
     private void updateSelectedButton() {
         clearSelectedButton();
-        this.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-        boardPanel.setSelectedButton(this);
-        if (piece != null) {
-            piece.createLegalNextPositions();
-            for(Position pos : piece.getLegalNextPositions()) {
-                boardPanel.board.get(pos.rank).get(pos.file).setMarked(true);
+        if(piece == null || piece.getColor() != boardPanel.getTurn()) {
+            idle();
+        }
+        else {
+            this.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+            boardPanel.setSelectedButton(this);
+            if (piece != null) {
+                piece.createLegalNextPositions();
+                for(Position pos : piece.getLegalNextPositions()) {
+                    board.get(pos.rank).get(pos.file).setMarked(true);
+                }
             }
         }
     }
@@ -85,7 +124,7 @@ public class CellButton extends JButton {
             Piece selectedPiece = boardPanel.getSelectedButton().getPiece();
             if(selectedPiece != null) {
                 for (Position pos : selectedPiece.getLegalNextPositions()) {
-                    boardPanel.board.get(pos.rank).get(pos.file).setMarked(false);
+                    board.get(pos.rank).get(pos.file).setMarked(false);
                 }
             }
             boardPanel.setSelectedButton(null);
@@ -113,9 +152,6 @@ public class CellButton extends JButton {
         }
     }
 
-    public Piece getPiece() {
-        return piece;
-    }
     public void setPiece(Piece piece) {
         if(piece == null) {
             this.piece = null;
@@ -128,7 +164,15 @@ public class CellButton extends JButton {
         }
     }
 
+    public Piece getPiece() {
+        return piece;
+    }
+
     public Position getPosition () {
         return position;
+    }
+
+    private void idle() {
+        // do nothing
     }
 }
