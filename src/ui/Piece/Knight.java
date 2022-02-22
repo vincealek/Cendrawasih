@@ -7,10 +7,12 @@ import java.util.ArrayList;
 public class Knight extends Piece {
     public Knight(int color) {
         super(color);
+        name = "Knight";
     }
 
     public Knight(ArrayList<ArrayList<CellButton>> board, int rank, int file, int color) {
         super(board, rank, file, color);
+        name = "Knight";
     }
 
     protected void setImagePath() {
@@ -22,9 +24,9 @@ public class Knight extends Piece {
     }
 
     @Override
-    protected void createNextPositions() {
-        nextPositions = new ArrayList<>();
-        for (int i = 0; i < 8; i++) nextPositions.add(new ArrayList<>());
+    protected void createUnobstructedMove() {
+        unobstructedMove = new ArrayList<>();
+        for (int i = 0; i < 8; i++) unobstructedMove.add(new ArrayList<>());
 
         int[] mox = {2,2,1,-1,-2,-2,-1,1};
         int[] moy = {1,-1,-2,-2,-1,1,2,2};

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class King extends Piece {
     public King(ArrayList<ArrayList<CellButton>> board, int rank, int file, int color) {
         super(board, rank, file, color);
+        name = "King";
     }
 
     @Override
@@ -20,9 +21,9 @@ public class King extends Piece {
     }
 
     @Override
-    protected void createNextPositions() {
-        nextPositions = new ArrayList<>();
-        for (int i = 0; i < 8; i++) nextPositions.add(new ArrayList<>());
+    protected void createUnobstructedMove() {
+        unobstructedMove = new ArrayList<>();
+        for (int i = 0; i < 8; i++) unobstructedMove.add(new ArrayList<>());
 
         int[] mox = {1, 0, -1, 0, 1, -1, -1, 1};
         int[] moy = {0, 1, 0, -1, 1, 1, -1, -1};
@@ -31,8 +32,8 @@ public class King extends Piece {
     }
 
     @Override
-    public void createLegalNextPositions() {
-        super.createLegalNextPositions();
+    public void createObstructedMove() {
+        super.createObstructedMove();
 
         ArrayList<ArrayList<CellButton>> board = Cendrawasih.PANEL.getBoard();
         if (!this.hasMoved) {
@@ -57,10 +58,10 @@ public class King extends Piece {
                 }
             }
             if (castleKingside) {
-                legalNextPositions.add(new Position(this.rank, this.file+2));
+                obstructedMove.add(new Position(this.rank, this.file+2));
             }
             if (castleQueenside) {
-                legalNextPositions.add(new Position(this.rank, this.file-2));
+                obstructedMove.add(new Position(this.rank, this.file-2));
             }
         }
     }

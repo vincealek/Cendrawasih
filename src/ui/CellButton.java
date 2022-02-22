@@ -43,7 +43,7 @@ public class CellButton extends JButton {
     }
 
     // MODIFIES : this
-    // EFFECT   : construct a cell button wit no piece
+    // EFFECT   : construct a cell button with no piece
     public CellButton(BoardPanel boardPanel, int x, int y, int size) {
         this.rank = x;
         this.file = y;
@@ -69,7 +69,6 @@ public class CellButton extends JButton {
                 CellButton selectedButton = boardPanel.getSelectedButton();
                 clearSelectedButton();
                 moveHere(selectedButton);
-                boardPanel.updateTurn();
             }
             else {
                 updateSelectedButton();
@@ -78,19 +77,27 @@ public class CellButton extends JButton {
         addActionListener(actionListener);
     }
 
+    // EFFECTS : move piece from origin to this
+    // MODIFY  : this.piece, origin.piece
     private void moveHere(CellButton origin) {
+        if(piece != null)
+            piece.setCaptured(true);
         setPiece(origin.getPiece());
         origin.setPiece(null);
         handleCastling(origin);
         handlePromotion();
+        boardPanel.updateTurn();
+        System.out.println(boardPanel.isLegal());
     }
 
+    // EFFECTS : handle pawn promotion
     private void handlePromotion() {
-        if (piece.getClass() == Pawn.class && (rank == 7) || (rank == 0)) {
+        if (piece.getClass() == Pawn.class && (rank == 7 || rank == 0)) {
             new PromotionDialog(this);
         }
     }
 
+    // EFFECTS : handle Castling
     private void handleCastling(CellButton origin) {
         if(piece.getClass() == King.class) {
             if(origin.getPosition().file-this.position.file == -2) {
@@ -111,19 +118,21 @@ public class CellButton extends JButton {
             this.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
             boardPanel.setSelectedButton(this);
             if (piece != null) {
-                piece.createLegalNextPositions();
-                for(Position pos : piece.getLegalNextPositions()) {
+                piece.createObstructedMove();
+                for(Position pos : piece.getObstructedMove()) {
                     board.get(pos.rank).get(pos.file).setMarked(true);
                 }
             }
         }
     }
+    // EFFECTS  : clear marked buttons on the board
+    // MODIFIES : boardPanel
     private void clearSelectedButton() {
         if(boardPanel.getSelectedButton() != null) {
             boardPanel.getSelectedButton().setBorder(null);
             Piece selectedPiece = boardPanel.getSelectedButton().getPiece();
             if(selectedPiece != null) {
-                for (Position pos : selectedPiece.getLegalNextPositions()) {
+                for (Position pos : selectedPiece.getObstructedMove()) {
                     board.get(pos.rank).get(pos.file).setMarked(false);
                 }
             }
@@ -131,15 +140,8 @@ public class CellButton extends JButton {
         }
     }
 
-    public void setMarked(boolean marked) {
-        this.marked = marked;
-        if(marked) {
-            this.setBorder(BorderFactory.createLineBorder(Color.green, 3));
-        }
-        else  {
-            this.setBorder(null);
-        }
-    }
+    // MODIFIES : this
+    // EFFECTS  : update this icon
     private void updateIcon() {
         if(piece == null) {
             setIcon(null);
@@ -152,6 +154,20 @@ public class CellButton extends JButton {
         }
     }
 
+    // EFFECTS  : mark or unmark this
+    // MODIFIES : this
+    public void setMarked(boolean marked) {
+        this.marked = marked;
+        if(marked) {
+            this.setBorder(BorderFactory.createLineBorder(Color.green, 3));
+        }
+        else  {
+            this.setBorder(null);
+        }
+    }
+
+    // MODIFIES : this
+    // EFFECTS  : set this.piece to piece, update icon
     public void setPiece(Piece piece) {
         if(piece == null) {
             this.piece = null;
@@ -162,6 +178,10 @@ public class CellButton extends JButton {
             this.piece = piece;
             updateIcon();
         }
+    }
+
+    public BoardPanel getBoardPanel() {
+        return boardPanel;
     }
 
     public Piece getPiece() {

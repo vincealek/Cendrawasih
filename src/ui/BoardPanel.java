@@ -12,6 +12,7 @@ public class BoardPanel extends JPanel {
 
     public CellButton selectedButton;
     public final ArrayList<ArrayList<CellButton>> board;
+    private final ArrayList<Piece> pieces;
 
     // EFFECTS : create a board and a panel for the board
     public BoardPanel () {
@@ -19,8 +20,34 @@ public class BoardPanel extends JPanel {
         this.selectedButton = null;
         setLayout(new GridLayout(10,10));
         board = new ArrayList<>();
+        pieces = new ArrayList<>();
         createBoard();
         createPanel();
+        createPieces();
+    }
+
+    public boolean isLegal() {
+
+        King king = null;
+        for(Piece piece : pieces) {
+            if(piece.getClass() == King.class && piece.getColor() != turn) {
+                king = (King)piece;
+            }
+        }
+
+        for(Piece piece : pieces) {
+            if(piece.isCaptured()) continue;
+            piece.createObstructedMove();
+            for(Position position : piece.getObstructedMove()) {
+                int rank = position.rank;
+                int file = position.file;
+                assert king != null;
+                if(king.getRank() == rank && king.getFile() == file) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     // MODIFIES : this.board
@@ -79,11 +106,21 @@ public class BoardPanel extends JPanel {
         }
         add(new JLabel());
     }
+    private void createPieces() {
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++){
+                Piece piece = board.get(i).get(j).getPiece();
+                if(piece != null) pieces.add(piece);
+            }
+        }
+    }
+
+    public void setSelectedButton(CellButton selectedButton) {
+        this.selectedButton = selectedButton;
+    }
 
     public void updateTurn() {
-        if(turn == Piece.WHITE) {
-            turn = Piece.BLACK;
-        }
+        if(turn == Piece.WHITE) turn = Piece.BLACK;
         else turn = Piece.WHITE;
     }
 
@@ -99,7 +136,7 @@ public class BoardPanel extends JPanel {
         return board;
     }
 
-    public void setSelectedButton(CellButton selectedButton) {
-        this.selectedButton = selectedButton;
+    public ArrayList<Piece> getPieces() {
+        return pieces;
     }
 }

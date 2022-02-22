@@ -7,10 +7,12 @@ import java.util.ArrayList;
 public class Queen extends Piece {
     public Queen(int color) {
         super(color);
+        name = "Queen";
     }
 
     public Queen(ArrayList<ArrayList<CellButton>> board, int rank, int file, int color) {
         super(board, rank, file, color);
+        name = "Queen";
     }
 
     @Override
@@ -23,9 +25,9 @@ public class Queen extends Piece {
     }
 
     @Override
-    protected void createNextPositions() {
-        nextPositions = new ArrayList<>();
-        for (int i = 0; i < 8; i++) nextPositions.add(new ArrayList<>());
+    protected void createUnobstructedMove() {
+        unobstructedMove = new ArrayList<>();
+        for (int i = 0; i < 8; i++) unobstructedMove.add(new ArrayList<>());
 
         int[] mox = {1, 0, -1, 0, 1, -1, -1, 1};
         int[] moy = {0, 1, 0, -1, 1, 1, -1, -1};

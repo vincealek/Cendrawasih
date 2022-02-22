@@ -29,7 +29,6 @@ public class PromotionDialog extends JDialog {
         add(panel);
     }
     public void addButton(Piece piece) {
-        System.out.println(piece.getImagePath());
         ImageIcon imageIcon = new ImageIcon(piece.getImagePath());
         Image image = imageIcon.getImage();
         imageIcon = new ImageIcon(image.getScaledInstance(callerButton.size,callerButton.size,
@@ -41,6 +40,7 @@ public class PromotionDialog extends JDialog {
             piece.setPosition(callerButton.getPosition());
             piece.setBoard(Cendrawasih.PANEL.getBoard());
             callerButton.setPiece(piece);
+            callerButton.getBoardPanel().getPieces().add(piece);
             setVisible(false);
         });
         panel.add(button);

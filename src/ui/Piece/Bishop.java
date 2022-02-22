@@ -7,10 +7,12 @@ import java.util.ArrayList;
 public class Bishop extends Piece {
     public Bishop(int color) {
         super(color);
+        name = "Bishop";
     }
 
     public Bishop(ArrayList<ArrayList<CellButton>> board, int rank, int file, int color) {
         super(board, rank, file, color);
+        name = "Bishop";
     }
 
     protected void setImagePath() {
@@ -22,12 +24,12 @@ public class Bishop extends Piece {
     }
 
     @Override
-    protected void createNextPositions() {
-        nextPositions = new ArrayList<>();
-        nextPositions.add(new ArrayList<>());
-        nextPositions.add(new ArrayList<>());
-        nextPositions.add(new ArrayList<>());
-        nextPositions.add(new ArrayList<>());
+    protected void createUnobstructedMove() {
+        unobstructedMove = new ArrayList<>();
+        unobstructedMove.add(new ArrayList<>());
+        unobstructedMove.add(new ArrayList<>());
+        unobstructedMove.add(new ArrayList<>());
+        unobstructedMove.add(new ArrayList<>());
 
         int[] mox = {1, -1, -1, 1};
         int[] moy = {1, 1, -1, -1};

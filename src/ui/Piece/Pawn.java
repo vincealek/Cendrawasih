@@ -9,6 +9,7 @@ public class Pawn extends Piece {
 
     public Pawn(ArrayList<ArrayList<CellButton>> board, int rank, int file, int color) {
         super(board, rank, file, color);
+        name = "Pawn";
     }
 
     protected void setImagePath() {
@@ -20,10 +21,10 @@ public class Pawn extends Piece {
     }
 
     @Override
-    protected void createNextPositions() {
-        nextPositions = new ArrayList<>();
-        nextPositions.add(new ArrayList<>());
-        nextPositions.add(new ArrayList<>());
+    protected void createUnobstructedMove() {
+        unobstructedMove = new ArrayList<>();
+        unobstructedMove.add(new ArrayList<>());
+        unobstructedMove.add(new ArrayList<>());
 
         if (color == BLACK) {
             if (rank+1 < 8) {
@@ -48,25 +49,25 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void createLegalNextPositions() {
+    public void createObstructedMove() {
         ArrayList<ArrayList<CellButton>> board = Cendrawasih.PANEL.getBoard();
-        legalNextPositions = new ArrayList<>();
-        for (Position position : nextPositions.get(0)) {
+        obstructedMove = new ArrayList<>();
+        for (Position position : unobstructedMove.get(0)) {
             int rank = position.rank;
             int file = position.file;
             Piece piece = board.get(rank).get(file).getPiece();
             if (piece != null) {
                 break;
             }
-            legalNextPositions.add(new Position(rank, file));
+            obstructedMove.add(new Position(rank, file));
         }
-        for (Position position : nextPositions.get(1)) {
+        for (Position position : unobstructedMove.get(1)) {
             int rank = position.rank;
             int file = position.file;
             Piece piece = board.get(rank).get(file).getPiece();
             if (piece != null) {
                 if (this.color != piece.getColor()) {
-                    legalNextPositions.add(new Position(rank, file));
+                    obstructedMove.add(new Position(rank, file));
                 }
             }
         }

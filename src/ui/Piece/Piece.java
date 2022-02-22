@@ -5,18 +5,21 @@ import ui.CellButton;
 import java.util.ArrayList;
 
 public abstract class Piece {
-
     public static final int WHITE = 0, BLACK = 1;
     public static final String resourcePath = "./resource/piecesplaceholder";
+    protected String name = "PIECE";
     public String imagePath;
     protected int rank, file, color;
     public boolean hasMoved;
+    protected boolean captured;
     protected ArrayList<ArrayList<CellButton>> board;
-    protected ArrayList<ArrayList<Position>> nextPositions;
-    protected ArrayList<Position> legalNextPositions;
+    protected ArrayList<ArrayList<Position>> unobstructedMove;
+    protected ArrayList<Position> obstructedMove, legalMove;
 
     public Piece(int color) {
         this.color = color;
+        this.hasMoved = false;
+        this.captured = false;
         setImagePath();
     }
 
@@ -26,62 +29,84 @@ public abstract class Piece {
         this.file = file;
         this.color = color;
         this.hasMoved = false;
+        this.captured = false;
         setImagePath();
-        createNextPositions();
+        createUnobstructedMove();
     }
-
-    protected abstract void setImagePath();
 
     protected void addPosition(int idx, int rank, int file) {
         if (rank >= 0 && rank < 8 && file >= 0 && file < 8) {
-            nextPositions.get(idx).add(new Position(rank,file));
+            unobstructedMove.get(idx).add(new Position(rank,file));
         }
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
+    protected abstract void createUnobstructedMove();
 
-    protected abstract void createNextPositions();
-
-    public void createLegalNextPositions() {
+    public void createObstructedMove() {
         ArrayList<ArrayList<CellButton>> board = this.board;
-        legalNextPositions = new ArrayList<>();
-        for (ArrayList<Position> nextPosition : nextPositions) {
+        obstructedMove = new ArrayList<>();
+        for (ArrayList<Position> nextPosition : unobstructedMove) {
             for (Position position : nextPosition) {
                 int rank = position.rank;
                 int file = position.file;
                 Piece piece = board.get(rank).get(file).getPiece();
                 if (piece != null) {
                     if (this.color != piece.getColor()) {
-                        legalNextPositions.add(new Position(rank, file));
+                        obstructedMove.add(new Position(rank, file));
                     }
                     break;
                 }
-                legalNextPositions.add(new Position(rank, file));
+                obstructedMove.add(new Position(rank, file));
             }
         }
+    }
+
+    public void createLegalMove() {
+        ArrayList<ArrayList<CellButton>> board = this.board;
+        legalMove = new ArrayList<>();
+        createObstructedMove();
+        for (Position pos : obstructedMove) {
+            int tRank = rank;
+            int tFile = file;
+            pretendMove(pos.rank, pos.file);
+        }
+    }
+
+    private void pretendMove(int rank, int file) {
+        Piece piece = board.get(rank).get(file).getPiece();
+        if(piece != null) piece.setCaptured(true);
+        this.rank = rank;
+        this.file = file;
     }
 
     public void setPosition(Position position) {
         this.rank = position.rank;
         this.file = position.file;
         this.hasMoved = true;
-        createNextPositions();
+        createUnobstructedMove();
     }
+
+    protected abstract void setImagePath();
 
     public void setBoard(ArrayList<ArrayList<CellButton>> board) {
         this.board = board;
     }
 
-    public ArrayList<ArrayList<Position>> getNextPositions() {
-        return nextPositions;
+    public void setCaptured(Boolean bool) {
+        captured = bool;
     }
-    public ArrayList<Position> getLegalNextPositions() {
-        return legalNextPositions;
+
+    public ArrayList<ArrayList<Position>> getUnobstructedMove() {
+        return unobstructedMove;
+    }
+    public ArrayList<Position> getObstructedMove() {
+        return obstructedMove;
     }
     public int getColor() {
         return color;
+    }
+    public String getImagePath() {
+        return imagePath;
     }
     public int getFile() {
         return file;
@@ -89,5 +114,20 @@ public abstract class Piece {
     public int getRank() {
         return rank;
     }
+    public boolean isCaptured() {return captured; }
 
+    @Override
+    public String toString() {
+        return name +
+//                "imagePath='" + imagePath + '\'' +
+                ", rank=" + rank +
+                ", file=" + file +
+                ", color=" + color +
+//                ", hasMoved=" + hasMoved +
+//                ", board=" + board +
+//                ", unobstructedMove=" + unobstructedMove +
+//                ", obstructedMove=" + obstructedMove +
+//                ", legalMove=" + legalMove +
+                '}';
+    }
 }
