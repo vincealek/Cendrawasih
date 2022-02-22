@@ -1,4 +1,4 @@
-package ui.Piece;
+package Main.ui.utility;
 
 public class Position {
     public int rank, file;

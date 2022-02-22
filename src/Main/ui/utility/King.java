@@ -1,12 +1,9 @@
-package ui.Piece;
-
-import ui.CellButton;
-import ui.Cendrawasih;
+package Main.ui.utility;
 
 import java.util.ArrayList;
 
 public class King extends Piece {
-    public King(ArrayList<ArrayList<CellButton>> board, int rank, int file, int color) {
+    public King(Board board, int rank, int file, int color) {
         super(board, rank, file, color);
     }
 
@@ -34,23 +31,22 @@ public class King extends Piece {
     public void createLegalNextPositions() {
         super.createLegalNextPositions();
 
-        ArrayList<ArrayList<CellButton>> board = Cendrawasih.PANEL.getBoard();
         if (!this.hasMoved) {
-            Piece kRook = board.get(this.rank).get(7).getPiece();
+            Piece kRook = board.get(rank, 7);
             boolean castleKingside = (kRook != null && !kRook.hasMoved);
             if (castleKingside) {
                 for (int i = this.file+1; i < 7; i++) {
-                    if (board.get(this.rank).get(i).getPiece() != null) {
+                    if (board.get(rank,i) != null) {
                         castleKingside = false;
                         break;
                     }
                 }
             }
-            Piece qRook = board.get(this.rank).get(0).getPiece();
+            Piece qRook = board.get(rank, 0);
             boolean castleQueenside = (qRook != null && !qRook.hasMoved);
             if (castleQueenside) {
                 for (int i = this.file-1; i >= 1; i--) {
-                    if (board.get(this.rank).get(i).getPiece() != null) {
+                    if (board.get(rank,i) != null) {
                         castleQueenside = false;
                         break;
                     }

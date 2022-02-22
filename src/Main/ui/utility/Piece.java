@@ -1,6 +1,4 @@
-package ui.Piece;
-
-import ui.CellButton;
+package Main.ui.utility;
 
 import java.util.ArrayList;
 
@@ -11,7 +9,7 @@ public abstract class Piece {
     public String imagePath;
     protected int rank, file, color;
     public boolean hasMoved;
-    protected ArrayList<ArrayList<CellButton>> board;
+    protected Board board;
     protected ArrayList<ArrayList<Position>> nextPositions;
     protected ArrayList<Position> legalNextPositions;
 
@@ -20,7 +18,7 @@ public abstract class Piece {
         setImagePath();
     }
 
-    public Piece(ArrayList<ArrayList<CellButton>> board, int rank, int file, int color) {
+    public Piece(Board board, int rank, int file, int color) {
         this.board = board;
         this.rank = rank;
         this.file = file;
@@ -45,13 +43,12 @@ public abstract class Piece {
     protected abstract void createNextPositions();
 
     public void createLegalNextPositions() {
-        ArrayList<ArrayList<CellButton>> board = this.board;
         legalNextPositions = new ArrayList<>();
         for (ArrayList<Position> nextPosition : nextPositions) {
             for (Position position : nextPosition) {
                 int rank = position.rank;
                 int file = position.file;
-                Piece piece = board.get(rank).get(file).getPiece();
+                Piece piece = board.get(rank,file);
                 if (piece != null) {
                     if (this.color != piece.getColor()) {
                         legalNextPositions.add(new Position(rank, file));
@@ -63,15 +60,21 @@ public abstract class Piece {
         }
     }
 
-    public void setPosition(Position position) {
-        this.rank = position.rank;
-        this.file = position.file;
+    public void move(int rank, int file) {
+        this.rank = rank;
+        this.file = file;
         this.hasMoved = true;
         createNextPositions();
     }
 
-    public void setBoard(ArrayList<ArrayList<CellButton>> board) {
+    public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public void setPosition(Position position) {
+        rank = position.rank;
+        file = position.file;
+        createNextPositions();
     }
 
     public ArrayList<ArrayList<Position>> getNextPositions() {
@@ -89,5 +92,4 @@ public abstract class Piece {
     public int getRank() {
         return rank;
     }
-
 }

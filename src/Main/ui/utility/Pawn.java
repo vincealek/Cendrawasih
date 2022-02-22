@@ -1,13 +1,10 @@
-package ui.Piece;
-
-import ui.CellButton;
-import ui.Cendrawasih;
+package Main.ui.utility;
 
 import java.util.ArrayList;
 
 public class Pawn extends Piece {
 
-    public Pawn(ArrayList<ArrayList<CellButton>> board, int rank, int file, int color) {
+    public Pawn(Board board, int rank, int file, int color) {
         super(board, rank, file, color);
     }
 
@@ -49,12 +46,11 @@ public class Pawn extends Piece {
 
     @Override
     public void createLegalNextPositions() {
-        ArrayList<ArrayList<CellButton>> board = Cendrawasih.PANEL.getBoard();
         legalNextPositions = new ArrayList<>();
         for (Position position : nextPositions.get(0)) {
             int rank = position.rank;
             int file = position.file;
-            Piece piece = board.get(rank).get(file).getPiece();
+            Piece piece = board.get(rank, file);
             if (piece != null) {
                 break;
             }
@@ -63,7 +59,7 @@ public class Pawn extends Piece {
         for (Position position : nextPositions.get(1)) {
             int rank = position.rank;
             int file = position.file;
-            Piece piece = board.get(rank).get(file).getPiece();
+            Piece piece = board.get(rank, file);
             if (piece != null) {
                 if (this.color != piece.getColor()) {
                     legalNextPositions.add(new Position(rank, file));

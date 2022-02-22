@@ -1,18 +1,21 @@
-package ui;
+package Main.ui;
 
-import ui.Piece.*;
+import Main.ui.utility.*;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class PromotionDialog extends JDialog {
 
-    public JPanel panel;
-    public CellButton callerButton;
-    public PromotionDialog(CellButton cellButton) {
-        this.callerButton = cellButton;
+    private JPanel panel;
+    private final int rank, file;
+    private final Board board;
+    public PromotionDialog(Board board, int rank, int file) {
+        this.rank = rank;
+        this.file = file;
+        this.board = board;
         setModal(true);
-        setSize(cellButton.size*4, cellButton.size);
+        setSize(Cendrawasih.SIZE/10*4, Cendrawasih.SIZE/10);
         setLocationRelativeTo(null);
         setUndecorated(true);
         addPanel();
@@ -22,26 +25,26 @@ public class PromotionDialog extends JDialog {
     public void addPanel() {
         panel = new JPanel();
         panel.setLayout(new GridLayout(1,4));
-        addButton(new Queen(callerButton.getPiece().getColor()));
-        addButton(new Rook(callerButton.getPiece().getColor()));
-        addButton(new Knight(callerButton.getPiece().getColor()));
-        addButton(new Bishop(callerButton.getPiece().getColor()));
+        addButton(new Queen(board.get(rank, file).getColor()));
+        addButton(new Knight(board.get(rank, file).getColor()));
+        addButton(new Bishop(board.get(rank, file).getColor()));
+        addButton(new Rook(board.get(rank, file).getColor()));
         add(panel);
     }
     public void addButton(Piece piece) {
         System.out.println(piece.getImagePath());
         ImageIcon imageIcon = new ImageIcon(piece.getImagePath());
         Image image = imageIcon.getImage();
-        imageIcon = new ImageIcon(image.getScaledInstance(callerButton.size,callerButton.size,
-                Image.SCALE_SMOOTH));
+        imageIcon = new ImageIcon(image.getScaledInstance(Cendrawasih.SIZE/10,
+                Cendrawasih.SIZE/10, Image.SCALE_SMOOTH));
 
         JButton button = new JButton(imageIcon);
         button.setBackground(Color.decode("#9e3021"));
         button.addActionListener(e -> {
-            piece.setPosition(callerButton.getPosition());
             piece.setBoard(Cendrawasih.PANEL.getBoard());
-            callerButton.setPiece(piece);
+            piece.setPosition(new Position(rank, file));
             setVisible(false);
+            board.set(rank, file, piece);
         });
         panel.add(button);
 

@@ -1,6 +1,4 @@
-package ui.Piece;
-
-import ui.CellButton;
+package Main.ui.utility;
 
 import java.util.ArrayList;
 
@@ -9,7 +7,7 @@ public class Queen extends Piece {
         super(color);
     }
 
-    public Queen(ArrayList<ArrayList<CellButton>> board, int rank, int file, int color) {
+    public Queen(Board board, int rank, int file, int color) {
         super(board, rank, file, color);
     }
 
