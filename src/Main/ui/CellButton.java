@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 
 public class CellButton extends JButton {
 
-    private final Position position;
     private final int rank, file;
     private final BoardPanel boardPanel;
     private boolean marked;
@@ -22,7 +21,6 @@ public class CellButton extends JButton {
         this.file = y;
         this.boardPanel = boardPanel;
         this.size = size;
-        this.position = new Position(x,y);
 
         if((x+y)%2 == 0)  {
             setBackground(Color.decode("#9e3021"));
@@ -42,7 +40,8 @@ public class CellButton extends JButton {
                 boardPanel.clearSelectedButton();
                 boardPanel.board.move(selectedButton.rank, selectedButton.file, rank, file);
                 boardPanel.updateIcons();
-                boardPanel.updateTurn();
+                boardPanel.getBoard().updateTurn();
+                boardPanel.getBoard().get(rank, file).updateHasMoved();
             }
             else {
                 SelectThisButton();
@@ -54,14 +53,14 @@ public class CellButton extends JButton {
     private void SelectThisButton() {
         boardPanel.clearSelectedButton();
         Piece piece = boardPanel.getBoard().get(rank, file);
-        if(piece == null || piece.getColor() != boardPanel.getTurn()) {
+        if(piece == null || piece.getColor() != boardPanel.getBoard().getTurn()) {
             idle();
         }
         else {
             this.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
             boardPanel.setSelectedButton(this);
-            piece.createLegalNextPositions();
-            for(Position pos : piece.getLegalNextPositions()) {
+            piece.createLegalMoves();
+            for(Position pos : piece.getLegalMoves()) {
                 boardPanel.getCellButtons().get(pos.rank).get(pos.file).setMarked(true);
             }
         }
@@ -89,10 +88,6 @@ public class CellButton extends JButton {
         }
     }
 
-    public Position getPosition () {
-        return position;
-    }
-
     public int getRank() {
         return rank;
     }
@@ -101,9 +96,6 @@ public class CellButton extends JButton {
         return file;
     }
 
-    public BoardPanel getBoardPanel() {
-        return boardPanel;
-    }
 
     private void idle() {
         // do nothing

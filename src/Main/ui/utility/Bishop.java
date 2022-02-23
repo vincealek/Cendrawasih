@@ -20,12 +20,12 @@ public class Bishop extends Piece {
     }
 
     @Override
-    protected void createNextPositions() {
-        nextPositions = new ArrayList<>();
-        nextPositions.add(new ArrayList<>());
-        nextPositions.add(new ArrayList<>());
-        nextPositions.add(new ArrayList<>());
-        nextPositions.add(new ArrayList<>());
+    protected void createUnObstructedMoves() {
+        unObstructedMoves = new ArrayList<>();
+        unObstructedMoves.add(new ArrayList<>());
+        unObstructedMoves.add(new ArrayList<>());
+        unObstructedMoves.add(new ArrayList<>());
+        unObstructedMoves.add(new ArrayList<>());
 
         int[] mox = {1, -1, -1, 1};
         int[] moy = {1, 1, -1, -1};

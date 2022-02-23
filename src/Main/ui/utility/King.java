@@ -17,9 +17,9 @@ public class King extends Piece {
     }
 
     @Override
-    protected void createNextPositions() {
-        nextPositions = new ArrayList<>();
-        for (int i = 0; i < 8; i++) nextPositions.add(new ArrayList<>());
+    protected void createUnObstructedMoves() {
+        unObstructedMoves = new ArrayList<>();
+        for (int i = 0; i < 8; i++) unObstructedMoves.add(new ArrayList<>());
 
         int[] mox = {1, 0, -1, 0, 1, -1, -1, 1};
         int[] moy = {0, 1, 0, -1, 1, 1, -1, -1};
@@ -28,8 +28,8 @@ public class King extends Piece {
     }
 
     @Override
-    public void createLegalNextPositions() {
-        super.createLegalNextPositions();
+    public void createObstructedMoves() {
+        super.createObstructedMoves();
 
         if (!this.hasMoved) {
             Piece kRook = board.get(rank, 7);
@@ -53,10 +53,10 @@ public class King extends Piece {
                 }
             }
             if (castleKingside) {
-                legalNextPositions.add(new Position(this.rank, this.file+2));
+                obstructedMoves.add(new Position(this.rank, this.file+2));
             }
             if (castleQueenside) {
-                legalNextPositions.add(new Position(this.rank, this.file-2));
+                obstructedMoves.add(new Position(this.rank, this.file-2));
             }
         }
     }

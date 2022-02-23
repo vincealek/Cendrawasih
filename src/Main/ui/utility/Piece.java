@@ -10,8 +10,8 @@ public abstract class Piece {
     protected int rank, file, color;
     public boolean hasMoved;
     protected Board board;
-    protected ArrayList<ArrayList<Position>> nextPositions;
-    protected ArrayList<Position> legalNextPositions;
+    protected ArrayList<ArrayList<Position>> unObstructedMoves;
+    protected ArrayList<Position> obstructedMoves, legalMoves;
 
     public Piece(int color) {
         this.color = color;
@@ -25,14 +25,14 @@ public abstract class Piece {
         this.color = color;
         this.hasMoved = false;
         setImagePath();
-        createNextPositions();
+        createUnObstructedMoves();
     }
 
     protected abstract void setImagePath();
 
     protected void addPosition(int idx, int rank, int file) {
         if (rank >= 0 && rank < 8 && file >= 0 && file < 8) {
-            nextPositions.get(idx).add(new Position(rank,file));
+            unObstructedMoves.get(idx).add(new Position(rank,file));
         }
     }
 
@@ -40,49 +40,71 @@ public abstract class Piece {
         return imagePath;
     }
 
-    protected abstract void createNextPositions();
+    protected abstract void createUnObstructedMoves();
 
-    public void createLegalNextPositions() {
-        legalNextPositions = new ArrayList<>();
-        for (ArrayList<Position> nextPosition : nextPositions) {
+    public void createObstructedMoves() {
+        createUnObstructedMoves();
+        obstructedMoves = new ArrayList<>();
+        for (ArrayList<Position> nextPosition : unObstructedMoves) {
             for (Position position : nextPosition) {
                 int rank = position.rank;
                 int file = position.file;
                 Piece piece = board.get(rank,file);
                 if (piece != null) {
                     if (this.color != piece.getColor()) {
-                        legalNextPositions.add(new Position(rank, file));
+                        obstructedMoves.add(new Position(rank, file));
                     }
                     break;
                 }
-                legalNextPositions.add(new Position(rank, file));
+                obstructedMoves.add(new Position(rank, file));
             }
         }
     }
 
-    public void move(int rank, int file) {
-        this.rank = rank;
-        this.file = file;
-        this.hasMoved = true;
-        createNextPositions();
+    public void createLegalMoves() {
+        createObstructedMoves();
+        legalMoves = new ArrayList<>();
+        ArrayList<Position> arrayList = new ArrayList<>(obstructedMoves);
+        int tempRank = rank, tempFile = file;
+        for(Position pos : arrayList) {
+            Piece piece = board.get(pos);
+            board.move(rank, file, pos.rank, pos.file);
+            board.updateTurn();
+            if(board.isLegal()) {
+                legalMoves.add(pos);
+            }
+            board.move(rank, file, tempRank, tempFile);
+            board.updateTurn();
+            board.set(pos.rank, pos.file, piece);
+        }
     }
 
     public void setBoard(Board board) {
         this.board = board;
     }
 
-    public void setPosition(Position position) {
-        rank = position.rank;
-        file = position.file;
-        createNextPositions();
+    public void setPosition(int rank, int file) {
+        this.rank = rank;
+        this.file = file;
     }
 
-    public ArrayList<ArrayList<Position>> getNextPositions() {
-        return nextPositions;
+    public void setPosition(Position position) {
+        this.rank = position.rank;
+        this.file = position.file;
     }
-    public ArrayList<Position> getLegalNextPositions() {
-        return legalNextPositions;
+
+    public void updateHasMoved() {
+        hasMoved = true;
     }
+
+    public ArrayList<Position> getObstructedMoves() {
+        return obstructedMoves;
+    }
+
+    public ArrayList<Position> getLegalMoves() {
+        return legalMoves;
+    }
+
     public int getColor() {
         return color;
     }

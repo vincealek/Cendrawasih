@@ -17,10 +17,10 @@ public class Pawn extends Piece {
     }
 
     @Override
-    protected void createNextPositions() {
-        nextPositions = new ArrayList<>();
-        nextPositions.add(new ArrayList<>());
-        nextPositions.add(new ArrayList<>());
+    protected void createUnObstructedMoves() {
+        unObstructedMoves = new ArrayList<>();
+        unObstructedMoves.add(new ArrayList<>());
+        unObstructedMoves.add(new ArrayList<>());
 
         if (color == BLACK) {
             if (rank+1 < 8) {
@@ -45,24 +45,25 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void createLegalNextPositions() {
-        legalNextPositions = new ArrayList<>();
-        for (Position position : nextPositions.get(0)) {
+    public void createObstructedMoves() {
+        createUnObstructedMoves();
+        obstructedMoves = new ArrayList<>();
+        for (Position position : unObstructedMoves.get(0)) {
             int rank = position.rank;
             int file = position.file;
             Piece piece = board.get(rank, file);
             if (piece != null) {
                 break;
             }
-            legalNextPositions.add(new Position(rank, file));
+            obstructedMoves.add(new Position(rank, file));
         }
-        for (Position position : nextPositions.get(1)) {
+        for (Position position : unObstructedMoves.get(1)) {
             int rank = position.rank;
             int file = position.file;
             Piece piece = board.get(rank, file);
             if (piece != null) {
                 if (this.color != piece.getColor()) {
-                    legalNextPositions.add(new Position(rank, file));
+                    obstructedMoves.add(new Position(rank, file));
                 }
             }
         }

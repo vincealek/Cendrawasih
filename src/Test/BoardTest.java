@@ -24,7 +24,7 @@ public class BoardTest {
         assertEquals(King.class, board.get(7,4).getClass());
         assertEquals(Bishop.class, board.get(7,5).getClass());
         assertEquals(Piece.WHITE, board.get(7,5).getColor());
-        assertNotNull(board.get(0,0).getLegalNextPositions());
+        assertNotNull(board.get(0,0).getObstructedMoves());
     }
 
     @Test

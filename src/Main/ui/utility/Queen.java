@@ -21,9 +21,9 @@ public class Queen extends Piece {
     }
 
     @Override
-    protected void createNextPositions() {
-        nextPositions = new ArrayList<>();
-        for (int i = 0; i < 8; i++) nextPositions.add(new ArrayList<>());
+    protected void createUnObstructedMoves() {
+        unObstructedMoves = new ArrayList<>();
+        for (int i = 0; i < 8; i++) unObstructedMoves.add(new ArrayList<>());
 
         int[] mox = {1, 0, -1, 0, 1, -1, -1, 1};
         int[] moy = {0, 1, 0, -1, 1, 1, -1, -1};

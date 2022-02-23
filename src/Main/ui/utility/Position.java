@@ -6,7 +6,5 @@ public class Position {
         this.rank = rank;
         this.file = file;
     }
-    public boolean isEqual(Position position) {
-        return (this.rank == position.rank) && (this.file == position.file);
-    }
+
 }

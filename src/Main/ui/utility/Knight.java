@@ -20,9 +20,9 @@ public class Knight extends Piece {
     }
 
     @Override
-    protected void createNextPositions() {
-        nextPositions = new ArrayList<>();
-        for (int i = 0; i < 8; i++) nextPositions.add(new ArrayList<>());
+    protected void createUnObstructedMoves() {
+        unObstructedMoves = new ArrayList<>();
+        for (int i = 0; i < 8; i++) unObstructedMoves.add(new ArrayList<>());
 
         int[] mox = {2,2,1,-1,-2,-2,-1,1};
         int[] moy = {1,-1,-2,-2,-1,1,2,2};

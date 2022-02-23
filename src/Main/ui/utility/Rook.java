@@ -21,12 +21,12 @@ public class Rook extends Piece{
     }
 
     @Override
-    protected void createNextPositions() {
-        nextPositions = new ArrayList<>();
-        nextPositions.add(new ArrayList<>());
-        nextPositions.add(new ArrayList<>());
-        nextPositions.add(new ArrayList<>());
-        nextPositions.add(new ArrayList<>());
+    protected void createUnObstructedMoves() {
+        unObstructedMoves = new ArrayList<>();
+        unObstructedMoves.add(new ArrayList<>());
+        unObstructedMoves.add(new ArrayList<>());
+        unObstructedMoves.add(new ArrayList<>());
+        unObstructedMoves.add(new ArrayList<>());
 
         int[] mox = {1, 0, -1, 0};
         int[] moy = {0, 1, 0, -1};

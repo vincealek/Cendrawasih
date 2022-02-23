@@ -1,7 +1,6 @@
 package Main.ui;
 
 import Main.ui.utility.Board;
-import Main.ui.utility.Piece;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,15 +8,12 @@ import java.util.ArrayList;
 
 public class BoardPanel extends JPanel {
 
-    public int turn;
-
     public CellButton selectedButton;
     public final Board board;
     public final ArrayList<ArrayList<CellButton>> cellButtons;
 
     // EFFECTS : create a board and a panel for the board
     public BoardPanel () {
-        this.turn = Piece.WHITE;
         this.selectedButton = null;
         this.cellButtons = new ArrayList<>();
         this.board = new Board();
@@ -67,19 +63,9 @@ public class BoardPanel extends JPanel {
         }
     }
 
-    public void updateTurn() {
-        if(turn == Piece.WHITE) {
-            turn = Piece.BLACK;
-        }
-        else turn = Piece.WHITE;
-    }
 
     public void setSelectedButton(CellButton cellButton) {
         selectedButton = cellButton;
-    }
-
-    public int getTurn() {
-        return turn;
     }
 
     public ArrayList<ArrayList<CellButton>> getCellButtons() {

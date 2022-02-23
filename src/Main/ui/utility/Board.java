@@ -5,9 +5,11 @@ import Main.ui.PromotionDialog;
 import java.util.ArrayList;
 
 public class Board {
+    int turn;
     ArrayList<ArrayList<Piece>> pieces;
 
     public Board() {
+        this.turn = Piece.WHITE;
         pieces = new ArrayList<>();
         for(int i = 0; i < 8; i++)
             pieces.add(new ArrayList<>());
@@ -38,12 +40,30 @@ public class Board {
         pieces.get(x).add(new Rook(this, x, 7, color));
     }
 
-    // REQUIRED : get(originRank, originFile) != null
-    public void move(int originRank, int originFile, int destRank, int destFile) {
+    public boolean isLegal() {
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                Piece piece = get(i,j);
+                if(piece != null) {
+                    piece.createObstructedMoves();
+                    for(Position pos : piece.getObstructedMoves()) {
+                        if(get(pos) != null && get(pos).getClass() == King.class &&
+                                turn != get(pos).getColor()) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
+    // REQUIRE  : get(originRank, originFile) != null
+    // MODIFIES : this
+    // EFFECTS  : move piece from origin rank/file to dest rank/file
+    public void move(int originRank, int originFile, int destRank, int destFile) {
         Piece originPiece = get(originRank, originFile);
-//        originPiece.createLegalNextPositions();
-        originPiece.move(destRank, destFile);
+        originPiece.setPosition(destRank, destFile);
         set(destRank, destFile, originPiece);
         set(originRank, originFile, null);
         handleCastling(originRank, originFile, originPiece);
@@ -66,8 +86,19 @@ public class Board {
         }
     }
 
+    public void updateTurn() {
+        if(turn == Piece.WHITE) {
+            turn = Piece.BLACK;
+        }
+        else turn = Piece.WHITE;
+    }
+
     public void set(int rank, int file, Piece piece) {
         pieces.get(rank).set(file, piece);
+    }
+
+    public int getTurn() {
+        return turn;
     }
 
     public Piece get(int x, int y) {
